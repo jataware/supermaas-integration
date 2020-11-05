@@ -18,8 +18,6 @@ def get_all_csv(in_dir):
     path = rf'{in_dir}'
     all_files = glob.glob(path + "*.csv")
 
-    print(path)
-
     return all_files
 
 # function to take in all FSC 2 column output files and build a single csv file
@@ -87,17 +85,16 @@ def four_col_to_many(all_files):
                 df_temp = df_0.append(df_temp).reset_index(drop=True)
 
             # initial build to grab first 3 columns
+            col_name = fn.split(".")[0]            
             if df.shape[0] == 0:
                 
                 df = df_temp
                 
                 #rename "Value" column with specific "Value_<filename>"
-                col_name = fn.split(".")[0]
                 df = df.rename(columns={'Value': f'Value_{col_name}'})
 
             # Already have base, so add "Value" data only to the df    
             else:
-                col_name = fn.split(".")[0]
                 df[f'Value_{col_name}'] = df_temp["Value"] 
 
     return df            
