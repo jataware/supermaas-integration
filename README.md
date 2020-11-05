@@ -1,4 +1,4 @@
-### DEC-experiment
+### December 2020 Experiment
 Hold code for DEC 2020 WM Experiment
 
 ### FSC Output Transform
