@@ -6,7 +6,7 @@ Hold code for DEC 2020 WM Experiment
 #### RUN IT
 1. clone to `your/dir/`
 2. Should only need `pip install pandas`
-3. `cd your/dir/convert_output/`
+3. `cd your/dir/FSC/convert_output/`
 4. Run `python3 FSC_collapse.py`
 5. Two files will be written to the `results` folder
 
