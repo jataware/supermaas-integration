@@ -1,17 +1,12 @@
 #!/usr/bin/env python3
 
-# python3 -m pip install pandas
-
 import pandas as pd
 import glob
 import os
 
-
 # Define where results will be sent
 cwd = os.getcwd()
 base = f"{cwd}/results/"
-
-### BASED ON THE FILES FROM DR. PUMA
 
 # Two column output file names:
 two_col_files = ["Export_FinalTotalByCountry.csv",
@@ -23,6 +18,7 @@ two_col_files = ["Export_FinalTotalByCountry.csv",
                  "NumberImportTradePartners_FinalTotalByCountry.csv",
                  "NumberImportTradePartners_InitialTotalByCountry.csv"
                 ]
+
 # Four column output file names:
 four_col_files = ["ConsumptiontoC0_TimeSeries.csv",
                  "Production_TimeSeries.csv",
@@ -67,7 +63,7 @@ def two_col_to_many(base, two_col_files):
 
     return df
 
-# copy year one data and change to year 0 with NaN as Value; used as filler to match shape of other files with Year=0
+# copy year one data and change to year 0 with NaN as Value; used as filler to match shape of other files with Year 0
 def add_year_0(df):
 
     df_0 = df[df["Year"]==1]
@@ -76,7 +72,7 @@ def add_year_0(df):
     
     return df_0
 
-# Read in all four column FSC files, add year 0 (if needed), and combine into single dataframe that is written to working directory
+# Read in all four column FSC files, add year 0 (if needed), and combine into single dataframe that is written to working directory as csv
 def four_col_to_many(base, four_col_files, add_year_0_list):
     
     # Directory control to grab ALL output files
