@@ -6,55 +6,45 @@ import pandas as pd
 import glob
 import os
 
-#  Will need to get os.path for file location...
 
+# Define where results will be sent
 cwd = os.getcwd()
-print(cwd)
-base = f"{cwd}/outputs/"
-# base = "/Users/travishartman/Desktop/Working/supermaas_models/FSC/jupyter/outputs/"
+res_dir = f"{cwd}/results/"
+in_dir = f"{cwd}/fsc_output_files/"
 
-### BASED ON THE FILES FROM DR. PUMA
+### See if file is 2 or 4 column outout file
+def shape_of_file(df):
+    num_cols = df.shape
+    num_cols = num_cols[1]
+    return num_cols
 
-# Two column output file names:
-two_col_files = ["Export_FinalTotalByCountry.csv",
-                 "Export_InitialTotalByCountry.csv",
-                 "Import_FinalTotalByCountry.csv",
-                 "Import_InitialTotalByCountry.csv",
-                 "NumberExportTradePartners_FinalTotalByCountry.csv",
-                 "NumberExportTradePartners_InitialTotalByCountry.csv",
-                 "NumberImportTradePartners_FinalTotalByCountry.csv",
-                 "NumberImportTradePartners_InitialTotalByCountry.csv"
-                ]
-# Four column output file names:
-four_col_files = ["ConsumptiontoC0_TimeSeries.csv",
-                 "Production_TimeSeries.csv",
-                 "Reserve_TimeSeries.csv",
-                 "ReserveChangetoC0_TimeSeries.csv",
-                 "Shortage_TimeSeries.csv"
-                ]
+# See if the file starts at Year 0...
+def year_start(df):
+    start_year = df.get("Year", "X")[0] 
+    return start_year
 
-# ADD YEAR 0 to the files listed below to match shape of other output files
-add_year_0_list = ["ConsumptiontoC0_TimeSeries.csv",
-                 "ReserveChangetoC0_TimeSeries.csv",
-                 "Shortage_TimeSeries.csv"
-                ]
+#Read in all csv files
+def get_all_csv(in_dir):
+    # Directory control to grab ALL output files
+    path = rf'{in_dir}'
+    all_files = glob.glob(path + "*.csv")
+
+    print(path)
+
+    return all_files
 
 # function to take in all FSC 2 column output files and build a single csv file
-def two_col_to_many(base, two_col_files):
-    
-    # Directory control to grab ALL output files
-    path = rf'{base}'
-    all_files = glob.glob(path + "*.csv")
+def two_col_to_many(all_files):
 
     df = pd.DataFrame()
     for filename in all_files:
         
-        fn = filename.split("/")[-1]
-        
         # Parse out 2 column files and build df to write to .csv
-        if fn in two_col_files:
-            df_temp = pd.read_csv(filename, index_col=None, header=0)
-            
+        df_temp = pd.read_csv(filename, index_col=None, header=0)
+        shaper = shape_of_file(df_temp)
+        
+        if shaper == 2:
+    
             # initial build to grab country column
             if df.shape[0] == 0:
                 df = df_temp
@@ -79,36 +69,31 @@ def add_year_0(df):
     return df_0
 
 # Read in all four column FSC files, add year 0 (if needed), and combine into single dataframe that is written to working directory
-def four_col_to_many(base, four_col_files, add_year_0_list):
-    
-    # Directory control to grab ALL output files
-    path = rf'{base}'
-    all_files = glob.glob(path + "*.csv")
+def four_col_to_many(all_files):
 
+    print("here")
     df = pd.DataFrame()
     for filename in all_files:
         
         fn = filename.split("/")[-1]
         
+        # Parse out 4 column files and build df to write to .csv
+        df_temp = pd.read_csv(filename, index_col=None, header=0)
+        shaper = shape_of_file(df_temp)
+
         # Parse out 4-column files and build df to write to .csv
-        if fn in four_col_files:
+        if shaper == 4:
+            
+            start_year = year_start(df_temp)
 
         	# Check to see if Year 0 needed...and add if so
-            if fn in add_year_0_list:
-                    
-                df_raw = pd.read_csv(filename, index_col=None, header=0)
-                
+            if start_year == 1:
                 # Function call from above
-                df_0 = add_year_0(df_raw)
+                df_0 = add_year_0(df_temp)
 
                 # add "Year=0" to top of original FSC output and reindex to avoid issues with non-add_year_0 dfs
-                df_temp = df_0.append(df_raw)
-                df_temp = df_temp.reset_index(drop=True)
-            
-            # No Year 0 required
-            else:
-                df_temp = pd.read_csv(filename, index_col=None, header=0)             
-            
+                df_temp = df_0.append(df_temp).reset_index(drop=True)
+
             # initial build to grab first 3 columns
             if df.shape[0] == 0:
                 
@@ -129,13 +114,13 @@ def four_col_to_many(base, four_col_files, add_year_0_list):
 if __name__ == "__main__":
 
     print("Converting Files...")
-
+    all_files = get_all_csv(in_dir)
     # Call functions to return dfs
-    df_two = two_col_to_many(base, two_col_files)
-    df_four = four_col_to_many(base, four_col_files, add_year_0_list)
+    df_two = two_col_to_many(all_files)
+    df_four = four_col_to_many(all_files)
 
     # Convert dfs to csv and write to working directory
-    df_two.to_csv(rf'{base}two_col.csv', index=False, na_rep='NA')
-    df_four.to_csv(rf'{base}four_col.csv', index=False, na_rep='NA')
+    df_two.to_csv(rf'{res_dir}two_col.csv', index=False, na_rep='NA')
+    df_four.to_csv(rf'{res_dir}four_col.csv', index=False, na_rep='NA')
 
-    print("Check your directory for your new files")
+    print(f"New csv files written to: {res_dir}")
