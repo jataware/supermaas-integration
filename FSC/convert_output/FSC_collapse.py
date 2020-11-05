@@ -12,17 +12,6 @@ cwd = os.getcwd()
 res_dir = f"{cwd}/results/"
 in_dir = f"{cwd}/fsc_output_files/"
 
-### See if file is 2 or 4 column outout file
-def shape_of_file(df):
-    num_cols = df.shape
-    num_cols = num_cols[1]
-    return num_cols
-
-# See if the file starts at Year 0...
-def year_start(df):
-    start_year = df.get("Year", "X")[0] 
-    return start_year
-
 #Read in all csv files
 def get_all_csv(in_dir):
     # Directory control to grab ALL output files
@@ -41,9 +30,11 @@ def two_col_to_many(all_files):
         
         # Parse out 2 column files and build df to write to .csv
         df_temp = pd.read_csv(filename, index_col=None, header=0)
-        shaper = shape_of_file(df_temp)
-        
-        if shaper == 2:
+        num_cols = df_temp.shape
+        num_cols = num_cols[1]
+
+        # Parse out 2-column files and build df to write to .csv
+        if num_cols == 2:
     
             # initial build to grab country column
             if df.shape[0] == 0:
@@ -71,7 +62,6 @@ def add_year_0(df):
 # Read in all four column FSC files, add year 0 (if needed), and combine into single dataframe that is written to working directory
 def four_col_to_many(all_files):
 
-    print("here")
     df = pd.DataFrame()
     for filename in all_files:
         
@@ -79,12 +69,14 @@ def four_col_to_many(all_files):
         
         # Parse out 4 column files and build df to write to .csv
         df_temp = pd.read_csv(filename, index_col=None, header=0)
-        shaper = shape_of_file(df_temp)
+        
+        num_cols = df_temp.shape
+        num_cols = num_cols[1]
 
         # Parse out 4-column files and build df to write to .csv
-        if shaper == 4:
+        if num_cols == 4:
             
-            start_year = year_start(df_temp)
+            start_year = df_temp.get("Year", "X")[0]
 
         	# Check to see if Year 0 needed...and add if so
             if start_year == 1:
