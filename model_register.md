@@ -134,10 +134,11 @@ This section of the json file is a list of dictionaries, where each element in t
 ##### `run.py` functions:
 - `def run_model()`: via the supermaas_utils library functionality:
    - Read in and parse your model input parameters (from the model-parameters.json)
-        ```
-       i_scenario = utils.parameters()['i_scenario']
-   ```
-   - Optional: convert parameters to required model input format.  For instance, in the FSC model we allow the user to select descriptive strings as the parameters; but the model requires integers as input. You can make that  transformation here: 
+      ```
+      i_scenario = utils.parameters()['i_scenario']
+      ```
+   
+    - Optional: convert parameters to required model input format.  For instance, in the FSC model we allow the user to select descriptive strings as the parameters; but the model requires integers as input. You can make that  transformation here: 
       ```
       if i_scenario == "COVID-19 + locust disruption to wheat: 1 year":
           i_scen = 1
