@@ -245,7 +245,7 @@ To verify supermaas containers are running, you can run `docker ps -a` to list c
   - minio/minio:RELEASE.2020-08-08T04-50-06Z
 ```
 
-### Build the base image: localhost:5000/supermaas_base:0.1
+### Build the base image: localhost:5000/supermaas_base:0.2
 
 For reference [see SuperMaaS docs](https://gitlab-ext.galois.com/world-modelers/galois-internal/supermaas/-/tree/master/lib).
 
@@ -256,7 +256,7 @@ cd ~/your/folder/supermaas/lib
 bash register-base.sh
 ```
 
-Verify via Docker that the localhost:5000/supermaas_base:0.1 image was created with `docker image ls`.
+Verify via Docker that the localhost:5000/supermaas_base:0.2 image was created with `docker image ls`.
 
 ### Build your model image
 
