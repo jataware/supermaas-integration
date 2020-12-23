@@ -21,7 +21,7 @@ This document outlines the steps required to register a model to SuperMaaS. It u
 - Create a new branch from the master with your model's name: for example `fsc-jataware`; this is where you will upload your bespoke files for a future merge request.
 - `cd ~/your/folder`
 - `git clone git@gitlab-ext.galois.com:world-modelers/galois-internal/model-sandbox.git`
-- Checkout your working branch, e.g. `git checkout fsc-jataware`.
+- Checkout your working branch, e.g. `cd model-sandbox` and `git checkout fsc-jataware`.
 - Symlink the `register.py`:
   - `cd ~/your/folder/model-sandbox/<your-model>` 
   - `ln -s ../register.py register.py`
